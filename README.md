@@ -6,7 +6,7 @@ The game is about finding the computer`s ships before they finds them.
 
 <img src="">
 
-Live link to the application is here https://book-wormz-code-institute-2022.herokuapp.com/
+Live link to the application is here https://p3s-c229fe40048e.herokuapp.com/
 
 ## How to play
 
