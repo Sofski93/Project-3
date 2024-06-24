@@ -19,6 +19,7 @@ The winner is the player who sinks all of their opponent´s battleships first.
 ## Features 
 
 <img src="https://github.com/Sofski93/Project-3/blob/main/1.png">
+
 + You must enter number and row.
 + You cannot enter the same number and row twice.
 + It says how many attempts you have left.
