@@ -19,9 +19,8 @@ The winner is the player who sinks all of their opponent´s battleships first.
 ## Features 
 
 <img src="https://github.com/Sofski93/Project-3/blob/main/1.png">
-<img src="
-<img src="
-<img src="
+<img src="https://github.com/Sofski93/Project-3/blob/main/2.png">
+<img src="https://github.com/Sofski93/Project-3/blob/main/3.png">
   
 ## Testing
 
