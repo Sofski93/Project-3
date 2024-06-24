@@ -1,142 +1,76 @@
-import random
+from random import randint
 
-GRID_SIZE = 10
+#Board for holding ship locations
+HIDDEN_BOARD = [[" "] * 8 for x in range(8)]
+# Board for displaying hits and misses
+GUESS_BOARD = [[" "] * 8 for i in range(8)]
 
-# Ships and sizes
-ships = {
-    'Destroyer': 2,
-    'Submarine': 3,
-    'Battleship': 4
+def print_board(board):
+    print("  A B C D E F G H")
+    print("  +-+-+-+-+-+-+-+")
+    row_number = 1
+    for row in board:
+        print("%d|%s|" % (row_number, "|".join(row)))
+        row_number += 1
+
+letters_to_numbers = {
+    'A': 0,
+    'B': 1,
+    'C': 2,
+    'D': 3,
+    'E': 4,
+    'F': 5,
+    'G': 6,
+    'H': 7
 }
+#computer create 5 ships
+def create_ships(board):
+    for ship in range(5):
+        ship_row, ship_column = randint(0,7), randint(0,7)
+        while board[ship_row][ship_column] == "X":
+            ship_row, ship_column = get_ship_location()
+        board[ship_row][ship_column] = "X"
 
-def random_row():
-    return random.randint(0, GRID_SIZE - 1)
+def get_ship_location():
+    row = input("Enter the row of the ship: ").upper()
+    while row not in "12345678":
+        print('Not an appropriate choice, please select a valid row')
+        row = input("Enter the row of the ship: ").upper()
+    column = input("Enter the column of the ship: ").upper()
+    while column not in "ABCDEFGH":
+        print('Not an appropriate choice, please select a valid column')
+        column = input("Enter the column of the ship: ").upper()
+    return int(row) - 1, letters_to_numbers[column]
 
-def random_col():
-    return random.randint(0, GRID_SIZE - 1)
-
-def place_ship(ship, size, grid):
-    while True:
-        row = random_row()
-        col = random_col()
-
-        is_vertical = random.choice([True, False])
-
-        if is_vertical:
-            if row + size > GRID_SIZE:
-                continue
-
-            if '.' not in [grid[row + i][col] for i in range(size)]:
-                continue
-
-            for i in range(size):
-                grid[row + i][col] = ship[0]
-        else:
-            if col + size > GRID_SIZE:
-                continue
-
-            if '.' not in [grid[row][col + i] for i in range(size)]:
-                continue
-
-            for i in range(size):
-                grid[row][col + i] = ship[0]
-
-        break
-
-    return True
-
-def place_ships(grid):
-    for ship, size in ships.items():
-        while True:
-            placed = place_ship(ship, size, grid)
-            if placed:
-                break
-    return grid
-
-def fire(row, col, grid):
-    mark = grid[row][col]
-    if mark == 'X' or mark == '-':
-        print("\nYou've already fired at this location. Try somewhere new!")
-        return
-    elif mark != '.':
-        print(f"\nHit! {mark} ship segment destroyed.")
-        grid[row][col] = 'X'
-        return mark
-    else:
-        print("\nYou missed!")
-        grid[row][col] = '-'
-        return False
-
-def print_grid(grid, fog_of_war=True):
-    print('  ' + ' '.join(map(str, range(GRID_SIZE))))
-    for i, row in enumerate(grid):
-        if fog_of_war:
-            row = ['.' if cell != 'X' else 'X' for cell in row]
-        print(f'{i} ' + ' '.join(row))
-
-def print_help():
-    print("Welcome to Battleship!")
-    print("To play the game, enter the row and column number of the square you want to fire at.")
-    print("The row and column numbers are numbered from 0 to 9, starting from the top left corner of the grid.")
-    print("You will have 10 turns to sink all of the enemy ships.")
-    print("If you sink all of the enemy ships before you run out of turns, you win!")
-    print("Good luck!")
-
-def main():
-    print_help()
-
-    # Place player ships
-    player_grid = [['.'] * GRID_SIZE for _ in range(GRID_SIZE)]
-    player_grid = place_ships(player_grid)
-
-    # Place enemy ships
-    enemy_grid = [['.'] * GRID_SIZE for _ in range(GRID_SIZE)]
-    enemy_grid = place_ships(enemy_grid)
-
-    ships_remaining = len(ships)
-
-    while ships_remaining > 0:
-        print("(Type 'quit' to exit the game)")
-
-        # Get input
-        action = input("Enter row (or 'quit' to exit), followed by column to fire at: ")
-        if action.lower().strip() == 'quit':
-            break
-
-        coordinates = action.split()
-        if len(coordinates) != 2:
-            print("\nInvalid coordinates, please re-enter.")
-            continue
-
-        try:
-            row, col = map(int, coordinates)
-            if row < 0 or row >= GRID_SIZE or col < 0 or col >= GRID_SIZE:
-                print("\nInvalid coordinates, retry.")
-                continue
-        except ValueError:
-            print("\nInvalid input, please enter row and column as integers.")
-            continue
-
-        hit_ship = fire(row, col, enemy_grid)
-
-        if hit_ship:
-            # If all ship segments are hit, mark the ship as destroyed
-            ship_name = [name for name, size in ships.items() if name[0] == hit_ship][0]
-            if hit_ship not in ''.join([''.join(row) for row in enemy_grid]):
-                print(f"\nYou have destroyed the enemy's {ship_name}!")
-                ships_remaining -= 1
-
-        print("\nYour Grid:")
-        print_grid(player_grid, fog_of_war=False)
-        print("\nEnemy Grid:")
-        print_grid(enemy_grid)
-
-    if action.lower().strip() == 'quit':
-        print("\nYou chose to quit the game.")
-    elif ships_remaining != 0 and action.lower().strip() != "quit":
-        print("\nAll your turns are over! You did not shoot down all enemy ships!")
-    else:
-        print("\nAll enemy ships destroyed! You win!")
+#check if all ships are hit
+def count_hit_ships(board):
+    count = 0
+    for row in board:
+        for column in row:
+            if column == "X":
+                count += 1
+    return count
 
 if __name__ == "__main__":
-    main()
+    create_ships(HIDDEN_BOARD)
+    turns = 10
+    while turns > 0:
+        print('Guess a battleship location')
+        print_board(GUESS_BOARD)
+        row, column = get_ship_location()
+        if GUESS_BOARD[row][column] == "-":
+            print("You guessed that one already.")
+        elif HIDDEN_BOARD[row][column] == "X":
+            print("Hit")
+            GUESS_BOARD[row][column] = "X" 
+            turns -= 1  
+        else:
+            print("MISS!")
+            GUESS_BOARD[row][column] = "-"   
+            turns -= 1     
+        if count_hit_ships(GUESS_BOARD) == 5:
+            print("You win!")
+            break
+        print("You have " + str(turns) + " turns left")
+        if turns == 0:
+            print("You ran out of turns")
