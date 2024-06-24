@@ -25,6 +25,10 @@ The winner is the player who sinks all of their opponent´s battleships first.
 + It says how many attempts you have left.
 
 <img src="https://github.com/Sofski93/Project-3/blob/main/2.png">
+
++ It says whether you have guessed right or wrong.
++ When all the attempts are over, it will come up whether you have won or lost.
+
 <img src="https://github.com/Sofski93/Project-3/blob/main/3.png">
   
 ## Testing
