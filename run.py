@@ -1,219 +1,208 @@
-from random import randint
+import random
+import pyfiglet
 
-# Define the Battleship class
-class Battleship:
-    def __init__(self):
-        """
-        Choose grid size and initialize the grids
-        Determine the ships sizes based on the grid size
-        """
+
+# Add values for ships & game grid
+
+
+length_of_ships = [2, 3, 4, 5]
+player_display_grid = [[" "] * 8 for i in range(8)]
+computer_display_grid = [[" "] * 8 for i in range(8)]
+player_guess_grid = [[" "] * 8 for i in range(8)]
+computer_guess_grid = [[" "] * 8 for i in range(8)]
+grid_values = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6, "H": 7}
+
+
+# Create Game board
+
+
+def print_board(board):
+    print("  A B C D E F G H")
+    print("  ---------------")
+    row_number = 1
+    for row in board:
+        print("%d|%s|" % (row_number, "|".join(row)))
+        row_number += 1
+
+
+# Function for placing ships onto board with either vertical or horizontal axis
+# Computer ships are placed at random while user is prompted to input there own
+
+
+def place_ships(board):
+
+    for ship_length in length_of_ships:
+
         while True:
-            try:
-                self.grid_size = int(input(
-                    green + " Choose grid size 6 or 10: "
-                ))
-                if self.grid_size not in [6, 10]:
-                    raise ValueError
-                break
-            except ValueError:
-                print(
-                    red + " Invalid grid size.\
- Please choose 6 or 10." + end_color
+            if board == computer_display_grid:
+                orientation, row, column = (
+                    random.choice(["H", "V"]),
+                    random.randint(0, 7),
+                    random.randint(0, 7),
                 )
-        self.player_grid = [
-            ["~"] * self.grid_size for _ in range(self.grid_size)
-        ]
-        self.computer_grid = [
-            ["~"] * self.grid_size for _ in range(self.grid_size)
-        ]
-        self.player_ships_positions = set()
-        self.computer_ships_positions = set()
-        self.player_attempts = set()
-        self.computer_attempts = set()
-        if self.grid_size == 10:
-            self.ships_sizes = [1, 2, 3, 4, 5]
-        else:
-            self.ships_sizes = [1, 2, 3]
+                if check_ship_fit(ship_length, row, column, orientation):
 
-    def print_grids(self):
-        """
-        Print the player's grid and the computer's grid
-        """
-        print("Player's Grid:")
-        self.print_grid(self.player_grid)
-        print("Computer's Grid:")
-        self.print_grid(self.computer_grid, hide_ships=True)
+                    if (
+                        ship_overlaps(board, row, column, orientation, ship_length)
+                        == False
+                    ):
 
-    def print_grid(self, grid, hide_ships=False):
-        """
-        Print the grid with column numbers
-        Print the grid with row Letters
-        """
-        print(
-            green + "   " + "  ".join(str(i) for i in range(self.grid_size)) +
-            end_color
-        )
-        for i, row in enumerate(grid):
-            print(green + chr(65 + i) + end_color + "  " + "  ".join(
-                blue + "~" + end_color if cell ==
-                "~" or (cell == "⛴" and hide_ships) else
-                cell for cell in row))
-        print()
-
-    def place_ships(self, grid, ship_positions):
-        """
-        Place ships on the grid randomly horizontally or vertically
-        """
-        for size in self.ships_sizes:
-            while True:
-                orientation = random.choice(["horizontal", "vertical"])
-                if orientation == "horizontal":
-                    row = random.randint(0, self.grid_size - 1)
-                    col = random.randint(0, self.grid_size - size)
-                    if all(grid[row][col + i] == "~" for i in range(size)):
-                        for i in range(size):
-                            grid[row][col + i] = "⛴"
-                            ship_positions.add((row, col + i))
+                        if orientation == "H":
+                            for i in range(column, column + ship_length):
+                                board[row][i] = "X"
+                        else:
+                            for i in range(row, row + ship_length):
+                                board[i][column] = "X"
                         break
-                else:
-                    row = random.randint(0, self.grid_size - size)
-                    col = random.randint(0, self.grid_size - 1)
-                    if all(grid[row + i][col] == "~" for i in range(size)):
-                        for i in range(size):
-                            grid[row + i][col] = "⛴"
-                            ship_positions.add((row + i, col))
+            else:
+                place_ship = True
+                print("Place the ship with a length of " + str(ship_length))
+                row, column, orientation = user_input(place_ship)
+                if check_ship_fit(ship_length, row, column, orientation):
+
+                    if (
+                        ship_overlaps(board, row, column, orientation, ship_length)
+                        == False
+                    ):
+
+                        if orientation == "H":
+                            for i in range(column, column + ship_length):
+                                board[row][i] = "X"
+                        else:
+                            for i in range(row, row + ship_length):
+                                board[i][column] = "X"
+                        print_board(player_display_grid)
                         break
 
-    def player_guess(self):
-        """
-        Allow the player to make a move
-        check if the move is valid
-        """
+
+# Functions to ensure ships don't overlap when placed and to ensure
+# that ships are also placed within the defined grid size
+
+
+def check_ship_fit(ship_length, row, column, orientation):
+    if orientation == "H":
+        return column + ship_length <= 8
+    else:
+        return row + ship_length <= 8
+
+
+def ship_overlaps(board, row, column, orientation, ship_length):
+    if orientation == "H":
+        return any(board[row][i] == "X" for i in range(column, column + ship_length))
+    else:
+        return any(board[i][column] == "X" for i in range(row, row + ship_length))
+
+
+# Function for collecting user inputs when placing ships on grid
+
+
+def user_input(place_ship):
+    while True:
+        try:
+            row = int(input("Enter the row 1-8 of the ship: ").strip()) - 1
+            if 0 <= row <= 7:
+                break
+            print("Please enter a number between 1-8")
+        except ValueError:
+            print("Please enter a number between 1-8")
+
+    while True:
+        try:
+            column = input("Enter the column of the ship: ").upper().strip()
+            column = grid_values[column]
+            if 0 <= column <= 7:
+                break
+            print("Please enter a letter between A-H")
+        except KeyError:
+            print("Please enter a letter between A-H")
+
+    if place_ship:
         while True:
             try:
-                row, col = input(
-                    "Enter your guess Row  and Column (e.g. A5): "
-                ).upper()
-                row = ord(row) - 65
-                col = int(col)
-                if (row, col) in self.player_attempts:
-                    print(
-                        red + "You have alredy tried this spot! Try again." +
-                        end_color
-                    )
-                elif (
-                    row < 0 or row >= self.grid_size or col < 0 or col >=
-                    self.grid_size
-                ):
-                    print(
-                        red + "Invalid guess you off-grid! Try again." +
-                        end_color
-                    )
-                else:
-                    self.player_attempts.add((row, col))
-                    if (row, col) in self.computer_ships_positions:
-                        print(red + "Hit!" + end_color)
-                        self.computer_grid[row][col] = "#"
-                        self.computer_ships_positions.remove((row, col))
-                    else:
-                        print(yellow + "Miss!" + end_color)
-                        self.computer_grid[row][col] = "x"
+                orientation = input("Enter orientation (H or V): ").upper().strip()
+                if orientation in ["H", "V"]:
                     break
-            except ValueError:
-                print(
-                    red + "Invalid input!\
-                          Enter row letter and column number." +
-                    end_color
-                    )
+                print("Please enter a orientation of H or V")
+            except TypeError:
+                print("Please enter a orientation of H or V")
+        return row, column, orientation
+    else:
+        return row, column
 
-    def computer_guess(self):
-        """
-        Computer makes a random move
-        desplay hit or miss message
-        """
-        row = random.randint(0, self.grid_size - 1)
-        col = random.randint(0, self.grid_size - 1)
-        while (row, col) in self.computer_attempts:
-            row = random.randint(0, self.grid_size - 1)
-            col = random.randint(0, self.grid_size - 1)
-        self.computer_attempts.add((row, col))
-        if (row, col) in self.player_ships_positions:
-            print(
-                red + f"Computer hit your ship at ({chr(65 + row)}, {col})!" +
-                end_color
-            )
-            self.player_grid[row][col] = "#"
-            self.player_ships_positions.remove((row, col))
+
+# Function for counting how many targets have been hit
+
+
+def count_hit_ships(board):
+    count = 0
+    for row in board:
+        for column in row:
+            if column == "X":
+                count += 1
+    return count
+
+
+# Function for game turns for both user and computer
+# Changes the display of the grid if the user or computer hits a target
+
+
+def turn(board):
+    if board == player_guess_grid:
+        row, column = user_input(False)
+        if board[row][column] == "-":
+            turn(board)
+        elif board[row][column] == "X":
+            turn(board)
+        elif computer_display_grid[row][column] == "X":
+            board[row][column] = "X"
         else:
-            print(
-                yellow +
-                f"Computer missed at ({chr(65 + row)}, {col})!" +
-                end_color
-            )
-            self.player_grid[row][col] = "x"
-
-    def play(self):
-        """
-        enter player name
-        display welcome message
-        display rules of the game
-        ask player to accept the mission
-        place ships for player and computer
-        loop through the game until one player wins
-        Print outcome of the game
-        """
-        print()
-        self.player_name = input(green + " Please enter your name: ")
-
-        print()
-        welcome_message = f" Welcome to Battleship Captain\
- {self.player_name}!\n----------------------\n"
-        for char in welcome_message:
-            print(green + char, end='', flush=True)
-            time.sleep(0.05)
-        rules = """ Rules of Engagement:
- You will be playing against the computer.
- Each of you will have a grid with ships.
- The goal is to sink all of the opponent's ships by
- guessing their positions on the grid.
- If you hit a ship, it will be marked with #.
- If you miss, it will be marked with x.
- The battle continues until all ships of one player are sunk.
- -------------------------------
- """
-        for char in rules:
-            print(char, end='', flush=True)
-            time.sleep(0.05)
-        promt = "Do you accept the mission?\
- Press 'S' to accept or any key to decline: "
-        for char in promt:
-            print(green + char + end_color, end='', flush=True)
-            time.sleep(0.05)
-        accept_mission = input()
-        if accept_mission.lower() != 'y':
-            print("Mission declined. Exiting the game." + end_color)
-            return
-        self.place_ships(self.player_grid, self.player_ships_positions)
-        self.place_ships(self.computer_grid, self.computer_ships_positions)
-        turns = 0
-        while self.player_ships_positions and self.computer_ships_positions:
-            self.print_grids()
-            self.player_guess()
-            self.computer_guess()
-            if not self.computer_ships_positions:
-                break
-            turns += 1
-        if self.player_ships_positions:
-            print(
-                 yellow + f"Congratulations {self.player_name}!\
- You won in {turns} turns!" +
-                end_color
-            )
+            board[row][column] = "-"
+    else:
+        row, column = random.randint(0, 7), random.randint(0, 7)
+        if board[row][column] == "-":
+            turn(board)
+        elif board[row][column] == "X":
+            turn(board)
+        elif player_display_grid[row][column] == "X":
+            board[row][column] = "X"
         else:
-            print(red + "Computer won!" + end_color)
+            board[row][column] = "-"
 
 
+# print and place methods for welcoming, playing and ending game
+# Game ends once count_hit_ships function reaches 14 by either user or computer
 
-# Run the game
-game = Battleship()
-game.play()
+
+def main():
+    battleship_welcome = pyfiglet.figlet_format("Welcome to Battleship")
+    print(battleship_welcome)
+    place_ships(computer_display_grid)
+
+    print_board(player_display_grid)
+    place_ships(player_display_grid)
+    while True:
+
+        while True:
+            player_turn = pyfiglet.figlet_format("Players Turn")
+            print(player_turn)
+            print("Guess where the battleship is")
+            print_board(player_guess_grid)
+            turn(player_guess_grid)
+            break
+        if count_hit_ships(player_guess_grid) == 14:
+            print("You win!")
+            break
+
+        while True:
+            computer_turn = pyfiglet.figlet_format("Computers Turn")
+            print(computer_turn)
+            turn(computer_guess_grid)
+            break
+        print_board(computer_guess_grid)
+        if count_hit_ships(computer_guess_grid) == 14:
+            print(" You Lose :( ")
+            break
+
+
+if __name__ == "__main__":
+    main()
