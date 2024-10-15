@@ -204,7 +204,8 @@ class Battleship:
                 break
             turns += 1
         if self.player_ships_positions:
-            print("Congratulations {self.player_name}!
+            print(
+                "Congratulations {self.player_name}!
             )
         else:
             print(" You lost the game " )
