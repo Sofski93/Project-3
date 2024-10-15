@@ -20,16 +20,23 @@ The winner is the player who sinks all of their opponent´s battleships first.
 
 <img src="https://github.com/Sofski93/Project-3/blob/main/1.png">
 
-+ You must enter number and row.
-+ You cannot enter the same number and row twice.
-+ It says how many attempts you have left.
++ Users can place there ships by entering a valid row target: 1-8, a valid column target A-H and finally a valid axis orientation either H "Horizontal" or V "Vertical. If users fail to input a correct column, row or orientation then the code will prompt them the valid values they can enter and will rerun this until a valid entry has been selected.
++ Users will have to place a total of 4 ships each with a different length within there grid. Rules have been defined to prevent users from placing there ships outside of the grid box and to prevent them from stacking ships on top of each other.
 
 <img src="https://github.com/Sofski93/Project-3/blob/main/2.png">
 
-+ It says whether you have guessed right or wrong.
-+ When all the attempts are over, it will come up whether you have won or lost.
 
++ You must enter number and row.
++ You cannot enter the same number and row twice.
++ It says whether you have guessed right or wrong.
+  
 <img src="https://github.com/Sofski93/Project-3/blob/main/3.png">
+
+<img src="https://github.com/Sofski93/Project-3/blob/main/4.png">
+
++ Both the user and the computer will continue to guess as to where the others battleships have been placed and the game will end once either the user or computer manages to sink all of the others battleships.
+
+<img src="https://github.com/Sofski93/Project-3/blob/main/5.png">
   
 ## Testing
 
