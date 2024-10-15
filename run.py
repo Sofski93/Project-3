@@ -205,10 +205,13 @@ class Battleship:
             turns += 1
         if self.player_ships_positions:
             print(
-                "Congratulations {self.player_name}!
+                 yellow + f"Congratulations {self.player_name}!\
+ You won in {turns} turns!" +
+                end_color
             )
         else:
-            print(" You lost the game " )
+            print(red + "Computer won!" + end_color)
+
 
 
 # Run the game
