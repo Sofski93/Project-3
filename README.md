@@ -4,7 +4,7 @@ Battleships is a Python terminal application which runs on the Code Institute mo
 
 The game is about finding the computer`s ships before they finds them.
 
-<img src="https://github.com/Sofski93/Project-3/blob/main/4.png">
+<img src="https://github.com/Sofski93/Project-3/blob/main/6.png">
 
 Live link to the application is here https://p3s-c229fe40048e.herokuapp.com/
 
