@@ -37,11 +37,32 @@ The winner is the player who sinks all of their opponent´s battleships first.
 + Both the user and the computer will continue to guess as to where the others battleships have been placed and the game will end once either the user or computer manages to sink all of the others battleships.
 
 <img src="https://github.com/Sofski93/Project-3/blob/main/5.png">
+
+# Technologies Used
+
+## Languages Used
+
++ Python3 Language
   
+## Tools Used
++ Code Institute Validator: To test Python code for bugs
++ Google Lighthouse Tester: To test overall loading speeds and performance of site
++ Heroku: To deploy application to a site where the code can be executed
++ Github: Was used as the repository for the project's code after being pushed from Git
+
 ## Testing
 
 I have tested this game in safari, edge and chrome.
 Have also tested in my iphone
+
++ Python code was run through Code Institute's python validator to test for bugs. 10 bugs recorded.
+  
+<img src="https://github.com/Sofski93/Project-3/blob/main/7.png">
+
++ Lighthouse Test was performed on deployed heroku site for Desktop devices as website was not designed with mobile responsiveness in mind.
+  
+<img src="https://github.com/Sofski93/Project-3/blob/main/8.png">
+
 
 
 ## Bugs, Issues and Errors
@@ -63,5 +84,6 @@ The following were the steps undertaken to deploy the project to Heroku:
 
 ## Credits
 
-+ Code Institute - Gitpod template provided for development
-+ Heroku - Hosting platform for deployment      
++ Slack
++ W3Schools
++ Knowledge Mavens: How to code Battleship in Python: https://www.youtube.com/watch?v=tF1WRCrd_HQ&ab_channel=KnowledgeMavens 
