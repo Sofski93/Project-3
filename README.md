@@ -63,13 +63,6 @@ Have also tested in my iphone
   
 <img src="https://github.com/Sofski93/Project-3/blob/main/8.png">
 
-
-
-## Bugs, Issues and Errors
-
-No bugs
-
-
 ## Deployment
 
 The following were the steps undertaken to deploy the project to Heroku:
@@ -80,7 +73,6 @@ The following were the steps undertaken to deploy the project to Heroku:
 + Click "Add Buildpack" and add Python and Node.js in that order
 + Navigate to Deploy tab, choose Github and confirm connection to github account
 + Click Deploy Branch, and application is now deployed.
-
 
 ## Credits
 
